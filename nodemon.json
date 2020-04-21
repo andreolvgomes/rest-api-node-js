@@ -3,6 +3,8 @@
         "MYSQL_USER": "adm",
         "MYSQL_PASSWORD": "123456",
         "MYSQL_DATABASE": "dbrest",
-        "MYSQL_HOST": "localhost"
+        "MYSQL_HOST": "localhost",
+
+        "JWT_KEY": "segredo"
     }
 }
