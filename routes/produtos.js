@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mysql = require('../mysql');
 const multer = require('multer');
+const login = require('../middleware/login');
 
 // settings upload image
 const storage = multer.diskStorage({
@@ -63,6 +64,7 @@ router.get('/', (req, res, next) => {
 
 // insert produtos
 router.post('/', upload.single('produto_imagem'), (req, res, next) => {
+    //return res.send('asfd');
     mysql.query('insert into produtos (nome, preco, imagem_produto) values (?, ?, ?);', [
             req.body.nome, req.body.preco, req.file.path
         ],
@@ -124,7 +126,7 @@ router.get('/:id_produto', (req, res, next) => {
 });
 
 // update produtos
-router.patch('/', (req, res, next) => {
+router.patch('/', login.obrigatorio, (req, res, next) => {
     mysql.query('update produtos set nome = ?, preco = ? where id_produto = ?', [req.body.nome, req.body.preco, req.body.id_produto],
         (error, result, field) => {
             if (error) {
@@ -157,7 +159,7 @@ router.patch('/', (req, res, next) => {
 });
 
 // delete produtos
-router.delete('/', (req, res, next) => {
+router.delete('/', login.obrigatorio, (req, res, next) => {
     mysql.query('delete from produtos where id_produto = ?', [req.body.id_produto],
         (error, result, field) => {
             if (error) {
