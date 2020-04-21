@@ -1,6 +1,34 @@
 const express = require('express');
 const router = express.Router();
 const mysql = require('../mysql');
+const multer = require('multer');
+
+// settings upload image
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './uploads/');
+    },
+    filename: function(req, file, cb) {
+        // cb(null, new Date().toISOString() + file.originalname);
+        cb(null, file.originalname);
+    }
+});
+
+// filter from images
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg')
+        cb(null, true);
+    else
+        cb(null, false);
+};
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5
+    },
+    fileFilter: fileFilter
+});
 
 // retorna lista de produtos
 router.get('/', (req, res, next) => {
@@ -34,8 +62,10 @@ router.get('/', (req, res, next) => {
 });
 
 // insert produtos
-router.post('/', (req, res, next) => {
-    mysql.query('insert into produtos (nome, preco) values (?, ?);', [req.body.nome, req.body.preco],
+router.post('/', upload.single('produto_imagem'), (req, res, next) => {
+    mysql.query('insert into produtos (nome, preco, imagem_produto) values (?, ?, ?);', [
+            req.body.nome, req.body.preco, req.file.path
+        ],
         (error, result, field) => {
             if (error) {
                 res.status(500).send({
