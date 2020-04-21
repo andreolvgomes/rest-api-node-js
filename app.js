@@ -26,6 +26,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/produtos', require('./routes/produtos'));
 app.use('/pedidos', require('./routes/pedidos'));
+app.use('/usuarios', require('./routes/usuarios'));
 
 // default, not found
 app.use((req, res, next) => {
