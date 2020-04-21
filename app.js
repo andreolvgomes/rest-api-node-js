@@ -3,11 +3,11 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-//extra
-app.use(morgan('dev'));
+app.use(morgan('dev')); //extra
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// Block access
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header(
@@ -22,6 +22,7 @@ app.use((req, res, next) => {
     next();
 });
 
+// Routes
 app.use('/produtos', require('./routes/produtos'));
 app.use('/pedidos', require('./routes/pedidos'));
 
